@@ -19,6 +19,7 @@ namespace BluntEditor
         static int maxX = 0;
         static int currentLineIndex = 0;
         static Dictionary<int, char> currentString = new Dictionary<int, char>();
+        static char Backspace = '\0';
         public static void GoToNewLine(char ch)
         {
             currentString.Add(posX, '\r');
@@ -27,7 +28,6 @@ namespace BluntEditor
             posY++;
             posX = 0;
             Content.Add(currentString);
-
             if ((maxY - 1) == posY)
             {
                 Curses.DeleteFirstLine();
@@ -102,6 +102,27 @@ namespace BluntEditor
                     if ((ch == (char)ConsoleKey.Enter) || (IsLineOver))
                     {
                         GoToNewLine(ch);
+                    }
+
+                    if (ch == Backspace)
+                    {
+                        if(IsNewLine)
+                        {
+                            posY--;
+                            posX = maxX;
+                            Curses.Move(posX, posY);
+                            Curses.Print(posX, posY, " ");
+                            currentString.Remove(currentString.Keys.Count - 1);
+                            Curses.Refresh();
+                        }
+                        else
+                        {
+                            Curses.Print(posX - 1, posY, " ");
+                            posX--;
+                            Curses.Move(posX, posY);
+                            currentString.Remove(currentString.Keys.Count - 1);
+                            Curses.Refresh();
+                        }
                     }
                     else
                     {
