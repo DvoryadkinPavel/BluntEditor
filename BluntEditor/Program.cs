@@ -11,13 +11,35 @@ namespace BluntEditor
 {
     class MainClass
     {
+        static Curses Curses;
+        static int posX = 0;
+        static int posY = 1;
+        static List<Dictionary<int, char>> Content = new List<Dictionary<int, char>>();
+        static int maxY = 0;
+        static int maxX = 0;
+        static int currentLineIndex = 0;
+        static Dictionary<int, char> currentString = new Dictionary<int, char>();
+        public static void GoToNewLine(char ch)
+        {
+            currentString.Add(posX, '\r');
+            posX++;
+            currentString.Add(posX, '\n');
+            posY++;
+            posX = 0;
+            Content.Add(currentString);
 
+            if ((maxY - 1) == posY)
+            {
+                Curses.DeleteFirstLine();
+                posY--;
+            }
+            Curses.Print(posX, posY, ch.ToString());
+            currentLineIndex++;
+            Curses.Refresh();
+        }
         public static void Main(string[] args)
         {
-            int posX = 0;
-            int posY = 1;
-            var Content = new List<Dictionary<int, char>>();
-            int maxY = 0;
+
             //string filename = null;
             //try
             //{
@@ -36,16 +58,17 @@ namespace BluntEditor
             //{
             //    Console.Error.WriteLine(ex);
             //}
-            Curses Curses = new Curses();
+            Curses = new Curses();
             Curses.Print(0, 0, "Введите текст:");
             Curses.Move(0, 1);
             Curses.Refresh();
-            var currentString = new Dictionary<int, char>();
             bool exit = false;
             while (!exit)
             {
                 char ch = Console.ReadKey(true).KeyChar;
-                if(ch != (char)ConsoleKey.Escape)
+                maxY = Console.WindowHeight;
+                maxX = Console.WindowWidth;
+                if (ch != (char)ConsoleKey.Escape)
                 {
                     if(posX ==0)
                     {
@@ -53,27 +76,20 @@ namespace BluntEditor
                     }
                     if (ch == (char)ConsoleKey.Enter)
                     {
-                        currentString.Add(posX,'\r');
-                        posX++;
-                        currentString.Add(posX,'\n');
-                        posY++;
-                        posX = 0;
-                        Content.Add(currentString);
-                        maxY = Console.WindowHeight;
-                        if ((maxY-1) == posY)
-                        {
-                            Curses.DeleteFirstLine();
-                            posY--;
-                        }
-                        Curses.Print(posX, posY, ch.ToString());
+                        GoToNewLine(ch);
+                    }
+                    if(posX>=maxX)
+                    {
+                        GoToNewLine(ch);
                     }
                     else
                     {
                         currentString.Add(posX, ch);
                         Curses.Print(posX, posY, ch.ToString());
                         posX++;
+                        Curses.Refresh();
                     }
-                    Curses.Refresh();
+
                 }
                 else
                 {
