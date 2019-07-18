@@ -74,9 +74,40 @@ namespace BluntEditor
         /// Gets the char.
         /// </summary>
         /// <returns>The char.</returns>
-        public char GetChar()
+        public int GetChar()
         {
-            return (char)wgetch(window);
+            return wgetch(window);
+        }
+        /// <summary>
+        /// Keypad the specified window and bf.
+        /// </summary>
+        /// <returns>The keypad.</returns>
+        /// <param name="window">Window.</param>
+        /// <param name="bf">If set to <c>true</c> bf.</param>
+        [DllImport(NCurses)]
+        private extern static int keypad(IntPtr window, bool bf);
+        /// <summary>
+        /// Keies the pad.
+        /// </summary>
+        /// <returns>The pad.</returns>
+        /// <param name="bf">If set to <c>true</c> bf.</param>
+        public int KeyPad(bool bf)
+        {
+            return keypad(window,bf);
+        }
+        /// <summary>
+        /// Noecho this instance.
+        /// </summary>
+        /// <returns>The noecho.</returns>
+        [DllImport(NCurses)]
+        private extern static int noecho();
+        /// <summary>
+        /// Nos the echo.
+        /// </summary>
+        /// <returns>The echo.</returns>
+        public int NoEcho()
+        {
+            return noecho();
         }
         /// <summary>
         /// Move the specified y and x.

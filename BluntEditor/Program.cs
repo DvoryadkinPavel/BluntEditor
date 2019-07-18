@@ -14,32 +14,33 @@ namespace BluntEditor
         static Curses Curses;
         static int posX = 0;
         static int posY = 1;
-        static List<Dictionary<int, char>> Content = new List<Dictionary<int, char>>();
+        static string Content = "";
         static int maxY = 0;
         static int maxX = 0;
-        static int currentLineIndex = 0;
-        static Dictionary<int, char> currentString = new Dictionary<int, char>();
-        static char Backspace = '\0';
+        static string currentString = "";
+        static int Backspace = 263;
+        static int AltBackspace = 264;
+        static int Escape = 27;
         public static void GoToNewLine(char ch)
         {
-            currentString.Add(posX, '\r');
-            posX++;
-            currentString.Add(posX, '\n');
+            currentString += '\r';
+            currentString += '\n';
             posY++;
             posX = 0;
-            Content.Add(currentString);
+            Content += currentString;
             if ((maxY - 1) == posY)
             {
                 Curses.DeleteFirstLine();
                 posY--;
             }
-            Curses.Print(posX, posY, ch.ToString());
-            currentLineIndex++;
+            Curses.Move(posX, posY);
+            //Curses.Print(posX, posY, ch.ToString());
             Curses.Refresh();
+            currentString = "";
         }
         public static void AddCharToCurrentLine(char ch)
         {
-            currentString.Add(posX, ch);
+            currentString += ch;
             Curses.Print(posX, posY, ch.ToString());
             posX++;
             Curses.Refresh();
@@ -61,9 +62,9 @@ namespace BluntEditor
         public static void UpdateSizes()
         {
             maxY = Console.WindowHeight;
-            maxX = Console.WindowWidth;
+            maxX = Console.WindowWidth-1;
         }
-        public static void Main(string[] args)
+        public static void Main(/*string[] args*/)
         {
 
             //string filename = null;
@@ -85,55 +86,71 @@ namespace BluntEditor
             //    Console.Error.WriteLine(ex);
             //}
             Curses = new Curses();
+            Curses.NoEcho();
+            Curses.KeyPad(true);
             Curses.Print(0, 0, "Введите текст:");
             Curses.Move(0, 1);
             Curses.Refresh();
             bool exit = false;
             while (!exit)
             {
-                char ch = Console.ReadKey(true).KeyChar;
+                int ch = Curses.GetChar();//код : 'Console.ReadKey(true).KeyChar;' в Linux частично не работает 
                 UpdateSizes();
-                if (ch != (char)ConsoleKey.Escape)
+                if (ch != Escape)
                 {
-                    if (IsNewLine)
+                    if (ch == 10)
                     {
-                        currentString = new Dictionary<int, char>();
-                    }
-                    if ((ch == (char)ConsoleKey.Enter) || (IsLineOver))
-                    {
-                        GoToNewLine(ch);
-                    }
-
-                    if (ch == Backspace)
-                    {
-                        if(IsNewLine)
-                        {
-                            posY--;
-                            posX = maxX;
-                            Curses.Move(posX, posY);
-                            Curses.Print(posX, posY, " ");
-                            currentString.Remove(currentString.Keys.Count - 1);
-                            Curses.Refresh();
-                        }
-                        else
-                        {
-                            Curses.Print(posX - 1, posY, " ");
-                            posX--;
-                            Curses.Move(posX, posY);
-                            currentString.Remove(currentString.Keys.Count - 1);
-                            Curses.Refresh();
-                        }
+                        GoToNewLine((char)ch);
                     }
                     else
                     {
-                        AddCharToCurrentLine(ch);
+                        if (ch == Backspace)
+                        {
+                            if ((!String.IsNullOrEmpty(Content)) || (!String.IsNullOrEmpty(currentString)))
+                            {
+                                if (IsNewLine)
+                                {
+                                    posY--;
+                                    var strings = Content.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                                    currentString = strings[strings.Length - 1];
+                                    Content = Content.Remove(Content.Length - currentString.Length - 2);
+                                    var cur = currentString;
+                                    var content = Content;
+                                    posX = currentString.Length;
+                                    Curses.Print(posX, posY, " ");
+                                    Curses.Move(posX, posY);
+                                    Curses.Refresh();
+                                }
+                                else
+                                {
+                                    //Curses.Print(posX - 1, posY, " ");
+                                    posX--;
+                                    Curses.Print(posX , posY, " ");
+                                    Curses.Move(posX, posY);
+                                    currentString = currentString.Remove(currentString.Length - 1);
+                                    Curses.Refresh();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(!IsLineOver)
+                            {
+                                AddCharToCurrentLine((char)ch);
+                            }
+                            else
+                            {
+                                GoToNewLine((char)ch);
+                            }
+
+                        }
                     }
                 }
                 else
                 {//нажали Esc
                     if (posX != 0)
                     {
-                        Content.Add(currentString);
+                        Content+=currentString;
                     }
                     exit = true;
                 }
@@ -141,13 +158,7 @@ namespace BluntEditor
             Curses = null;
             Console.Clear();
             Console.WriteLine("Result :\r");
-            foreach (var str in Content)
-            {
-                foreach(var ch in str)
-                {
-                    Console.Write(ch.Value);
-                }
-            }
+            Console.Write(Content);
             Console.ReadLine();
         }
     }
