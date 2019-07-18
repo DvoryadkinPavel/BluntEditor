@@ -37,6 +37,32 @@ namespace BluntEditor
             currentLineIndex++;
             Curses.Refresh();
         }
+        public static void AddCharToCurrentLine(char ch)
+        {
+            currentString.Add(posX, ch);
+            Curses.Print(posX, posY, ch.ToString());
+            posX++;
+            Curses.Refresh();
+        }
+        public static bool IsNewLine
+        {
+            get
+            {
+                return posX == 0;
+            }
+        }
+        public static bool IsLineOver
+        {
+            get
+            {
+                return posX >= maxX;
+            }
+        }
+        public static void UpdateSizes()
+        {
+            maxY = Console.WindowHeight;
+            maxX = Console.WindowWidth;
+        }
         public static void Main(string[] args)
         {
 
@@ -66,33 +92,24 @@ namespace BluntEditor
             while (!exit)
             {
                 char ch = Console.ReadKey(true).KeyChar;
-                maxY = Console.WindowHeight;
-                maxX = Console.WindowWidth;
+                UpdateSizes();
                 if (ch != (char)ConsoleKey.Escape)
                 {
-                    if(posX ==0)
+                    if (IsNewLine)
                     {
-                        currentString = new Dictionary<int,char>();
+                        currentString = new Dictionary<int, char>();
                     }
-                    if (ch == (char)ConsoleKey.Enter)
-                    {
-                        GoToNewLine(ch);
-                    }
-                    if(posX>=maxX)
+                    if ((ch == (char)ConsoleKey.Enter) || (IsLineOver))
                     {
                         GoToNewLine(ch);
                     }
                     else
                     {
-                        currentString.Add(posX, ch);
-                        Curses.Print(posX, posY, ch.ToString());
-                        posX++;
-                        Curses.Refresh();
+                        AddCharToCurrentLine(ch);
                     }
-
                 }
                 else
-                {
+                {//нажали Esc
                     if (posX != 0)
                     {
                         Content.Add(currentString);
@@ -101,7 +118,6 @@ namespace BluntEditor
                 }
             }
             Curses = null;
-
             Console.Clear();
             Console.WriteLine("Result :\r");
             foreach (var str in Content)
