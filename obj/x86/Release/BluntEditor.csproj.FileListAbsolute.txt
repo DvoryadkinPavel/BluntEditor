@@ -1,0 +1,3 @@
+/home/pasha/Projects/BluntEditor/BluntEditor/bin/Release/BluntEditor.exe
+/home/pasha/Projects/BluntEditor/BluntEditor/obj/x86/Release/BluntEditor.csproj.CoreCompileInputs.cache
+/home/pasha/Projects/BluntEditor/BluntEditor/obj/x86/Release/BluntEditor.exe
