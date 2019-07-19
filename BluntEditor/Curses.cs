@@ -6,6 +6,7 @@ namespace BluntEditor
     public class Curses
     {
         const string NCurses = "libncursesw.so.5";
+        const string Locale = "/usr/bin/locale";
         private IntPtr window;
         /// <summary>
         /// Initscr this instance.
@@ -15,6 +16,7 @@ namespace BluntEditor
         private extern static IntPtr initscr();
         public Curses()
         {
+            SetLocale();//не работает для GetChar TODO: прикрутить костыль ввода UTF-8
             window = initscr();
         }
         /// <summary>
@@ -26,6 +28,12 @@ namespace BluntEditor
         ~Curses()
         {
             int result = endwin();
+        }
+        [DllImport(Locale)]
+        private extern static int setlocale(int loc, string val);
+        public int SetLocale()
+        {
+            return setlocale(0, "");
         }
         /// <summary>
         /// Mvwprintw the specified window, y, x and message.
@@ -69,14 +77,14 @@ namespace BluntEditor
         /// <returns>The wgetch.</returns>
         /// <param name="window">Window.</param>
         [DllImport(NCurses)]
-        private extern static int wgetch(IntPtr window);
+        private extern static int getchar();//wgetch(IntPtr window);
         /// <summary>
         /// Gets the char.
         /// </summary>
         /// <returns>The char.</returns>
         public int GetChar()
         {
-            return wgetch(window);
+            return getchar();//wgetch(window);
         }
         /// <summary>
         /// Keypad the specified window and bf.

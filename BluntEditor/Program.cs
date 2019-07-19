@@ -6,6 +6,11 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using System.Globalization;
+using System.Collections;
+
 
 namespace BluntEditor
 {
@@ -18,11 +23,8 @@ namespace BluntEditor
         static int maxY = 0;
         static int maxX = 0;
         static string currentString = "";
-        const int Backspace = 0;
-        const int Escape = 27;
-        const int Enter = 13;
         static bool exit = false;
-        public static void GoToNewLine(char ch)
+        public static void GoToNewLine()
         {
             currentString += '\r';
             currentString += '\n';
@@ -128,27 +130,37 @@ namespace BluntEditor
             Curses.Refresh();
             while (!exit)
             {
-                int ch = (int)Console.ReadKey(true).KeyChar;
+                var ck = Console.ReadKey(true);
                 UpdateSizes();
-                switch(ch)
+                switch(ck.Key)
                 {
-                    case Escape:
+                    case ConsoleKey.LeftArrow:
+                        posX--;
+                        Curses.Move(posX, posY);
+                        Curses.Refresh();
+                        break;
+                    case ConsoleKey.RightArrow:
+                        posX++;
+                        Curses.Move(posX, posY);
+                        Curses.Refresh();
+                        break;
+                    case ConsoleKey.Escape:
                         EscapeEvent();
                         break;
-                    case Enter:
-                        GoToNewLine((char)ch);
+                    case ConsoleKey.Enter:
+                        GoToNewLine();
                         break;
-                    case Backspace:
+                    case ConsoleKey.Backspace:
                         BackspaceEvent();
                         break;
                     default:
                         if (!IsLineOver)
                         {
-                            AddCharToCurrentLine((char)ch);
+                            AddCharToCurrentLine(ck.KeyChar);
                         }
                         else
                         {
-                            GoToNewLine((char)ch);
+                            GoToNewLine();
                         }
                         break;
                 }
