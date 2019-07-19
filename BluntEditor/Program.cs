@@ -19,18 +19,16 @@ namespace BluntEditor
         static Curses Curses;
         static int posX = 0;
         static int posY = 1;
-        static string Content = "";
+        static ArrayList Content = new ArrayList();
         static int maxY = 0;
         static int maxX = 0;
         static string currentString = "";
         static bool exit = false;
         public static void GoToNewLine()
         {
-            currentString += '\r';
-            currentString += '\n';
             posY++;
             posX = 0;
-            Content += currentString;
+            Content.Add(currentString);
             if ((maxY - 1) == posY)
             {
                 Curses.DeleteFirstLine();
@@ -68,16 +66,13 @@ namespace BluntEditor
         }
         public static void BackspaceEvent()
         {
-            if ((!String.IsNullOrEmpty(Content)) || (!String.IsNullOrEmpty(currentString)))
+            if ( !((posX==0)&&(posY==1)) )
             {
                 if (IsNewLine)
                 {
                     posY--;
-                    var strings = Content.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                    currentString = strings[strings.Length - 1];
-                    Content = Content.Remove(Content.Length - currentString.Length - 2);
-                    var cur = currentString;
-                    var content = Content;
+                    currentString = (string)Content[Content.Count - 1];
+                    Content.RemoveAt(Content.Count - 1);
                     posX = currentString.Length;
                     Curses.Print(posX, posY, " ");
                     Curses.Move(posX, posY);
@@ -97,7 +92,7 @@ namespace BluntEditor
         {
             if (posX != 0)
             {
-                Content += currentString;
+                Content.Add(currentString);
             }
             exit = true;
         }
@@ -168,8 +163,11 @@ namespace BluntEditor
             Curses = null;
             Console.Clear();
             Console.WriteLine("Result :\r");
-            Console.Write(Content);
-            Console.ReadLine();
+            foreach(var str in Content)
+            {
+                Console.WriteLine(str+"\r");
+            }
+            Console.ReadKey();
         }
     }
 }
