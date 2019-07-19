@@ -18,8 +18,7 @@ namespace BluntEditor
         static int maxY = 0;
         static int maxX = 0;
         static string currentString = "";
-        static int Backspace = 263;
-        static int AltBackspace = 264;
+        static int Backspace = 0;
         static int Escape = 27;
         public static void GoToNewLine(char ch)
         {
@@ -94,11 +93,11 @@ namespace BluntEditor
             bool exit = false;
             while (!exit)
             {
-                int ch = Curses.GetChar();//код : 'Console.ReadKey(true).KeyChar;' в Linux частично не работает 
+                int ch = (int)Console.ReadKey(true).KeyChar;
                 UpdateSizes();
                 if (ch != Escape)
                 {
-                    if (ch == 10)
+                    if (ch == 13)
                     {
                         GoToNewLine((char)ch);
                     }

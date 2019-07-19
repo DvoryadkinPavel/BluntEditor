@@ -7,10 +7,8 @@
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="BluntEditor" expanded="True">
-            <Node name="BluntEditor" expanded="True">
-              <Node name="Program.cs" selected="True" />
-            </Node>
+          <Node name="BluntEditor" expanded="True" selected="True">
+            <Node name="BluntEditor" expanded="True" />
           </Node>
         </State>
       </Pad>
