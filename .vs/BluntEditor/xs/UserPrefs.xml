@@ -1,7 +1,7 @@
 ﻿<Properties StartupConfiguration="{E5525596-3C4D-48AF-AFD6-53A9311C074D}|Default">
   <MonoDevelop.Ide.Workbench ActiveDocument="BluntEditor/Program.cs">
     <Files>
-      <File FileName="BluntEditor/Program.cs" Line="107" Column="16" />
+      <File FileName="BluntEditor/Program.cs" Line="107" Column="10" />
       <File FileName="BluntEditor/Curses.cs" Line="1" Column="1" />
     </Files>
     <Pads>

@@ -27,16 +27,15 @@ namespace BluntEditor
         public static void GoToNewLine()
         {
             posY++;
+            currentString = "";
             posX = 0;
-            Content.Add(currentString);
+            Content.Insert(posY - 1, currentString);
             if ((maxY - 1) == posY)
             {
                 Curses.DeleteFirstLine();
                 posY--;
             }
-            Curses.Move(posX, posY);
-            Curses.Refresh();
-            currentString = "";
+            RefreshLines();
         }
         public static List<char> ToCharList(string str)
         {
@@ -51,12 +50,41 @@ namespace BluntEditor
             foreach (var c in list) str+=c;
             return str;
         }
+        public static string EmptyString
+        {
+            get
+            {
+                var emptyStr = "";
+                for (int i = 0; i < maxX; i++) emptyStr += " ";
+                return emptyStr;
+            }
+        }
         public static void RefreshLine()
         {
-            var emptyStr = "";
-            for (int i = 0; i < maxX; i++) emptyStr += " ";
-            Curses.Print(0, posY, emptyStr);
+
+            Curses.Print(0, posY, EmptyString);
             Curses.Print(0, posY, currentString);
+            Curses.Move(posX, posY);
+            Curses.Refresh();
+            SaveLine(posY - 1);
+        }
+        public static void RefreshLines()
+        { 
+            for(int index=1;index < maxY;index++)
+            {
+                if(index > Content.Count)
+                {
+                    Curses.Print(0, index, EmptyString);
+                }
+                else
+                {
+                    if(String.IsNullOrEmpty((string)Content[index - 1]))
+                    {
+                        Curses.Print(0, index, EmptyString);
+                    }
+                    else Curses.Print(0, index, (string)Content[index - 1]);
+                }
+            }
             Curses.Move(posX, posY);
             Curses.Refresh();
         }
@@ -67,15 +95,15 @@ namespace BluntEditor
                 currentString += ch;
                 Curses.Print(posX, posY, ch.ToString());
                 posX++;
-                Curses.Refresh();
             }
             else
             {
                 var list = ToCharList(currentString);
                 list.Insert(posX, ch);
                 currentString = CharListToString(list);
-                RefreshLine();
+
             }
+            RefreshLine();
         }
         public static bool IsNewLine
         {
@@ -98,47 +126,51 @@ namespace BluntEditor
         }
         public static void BackspaceEvent()
         {
-            if ( !((posX==0)&&(posY==1)) )
+            if (!IsNewLine)
             {
-                if (IsNewLine)
-                {
-                    posY--;
-                    currentString = (string)Content[Content.Count - 1];
-                    Content.RemoveAt(Content.Count - 1);
-                    posX = currentString.Length;
-                    Curses.Print(posX, posY, " ");
-                    Curses.Move(posX, posY);
-                    Curses.Refresh();
-                }
-                else if(posX!=0)
-                {
-                    posX--;
-                    Curses.Print(posX, posY, " ");
-                    Curses.Move(posX, posY);
-                    var list = ToCharList(currentString);
-                    list.RemoveAt(posX);
-                    currentString = CharListToString(list);
-                    RefreshLine();
-                }
-            }
-        }
-        public static void DeleteEvent()
-        {
-            if (!(posX >= currentString.Length))
-            {
+                posX--;
+                Curses.Print(posX, posY, " ");
+                Curses.Move(posX, posY);
                 var list = ToCharList(currentString);
                 list.RemoveAt(posX);
                 currentString = CharListToString(list);
                 RefreshLine();
             }
         }
+        public static void DeleteEvent()
+        {
+            if(Content.Count!=0)
+            {
+                if (String.IsNullOrEmpty(currentString))
+                {
+                    Curses.DeleteLine();
+                    Content.RemoveAt(posY - 1);
+                    currentString = (string)Content[posY - 1];
+                    RefreshLines();
+                }
+                else
+                {
+                    if (!(posX >= currentString.Length))
+                    {
+                        var list = ToCharList(currentString);
+                        list.RemoveAt(posX);
+                        currentString = CharListToString(list);
+                        RefreshLine();
+                    }
+                }
+            }
+        }
         public static void EscapeEvent()
         {
-            if (posX != 0)
+            exit = true;
+        }
+        public static void SaveLine(int index)
+        {
+            if(index >= Content.Count)
             {
                 Content.Add(currentString);
             }
-            exit = true;
+            else Content[index] = currentString;
         }
         public static void Main(/*string[] args*/)
         {
@@ -186,6 +218,35 @@ namespace BluntEditor
                         posX = currentString.Length;
                         Curses.Move(posX, posY);
                         Curses.Refresh();
+                        break;
+                    case ConsoleKey.UpArrow:
+                        if(posY!=1)
+                        {
+                            if (posY > Content.Count)
+                            {
+                                Content.Add(currentString);
+                            }
+                            else
+                            {
+                                SaveLine(posY - 1);
+                            }
+                            posY--;
+                            currentString = (string)Content[posY - 1];
+                            if (posX > currentString.Length) posX = currentString.Length;
+                            Curses.Move(posX, posY);
+                            Curses.Refresh();
+                        }
+                        break;
+                    case ConsoleKey.DownArrow:
+                        if (posY < Content.Count)
+                        {
+                            SaveLine(posY - 1);
+                            posY++;
+                            currentString = (string)Content[posY - 1];
+                            if (posX > currentString.Length) posX = currentString.Length;
+                            Curses.Move(posX, posY);
+                            Curses.Refresh();
+                        }
                         break;
                     case ConsoleKey.LeftArrow:
                         if(posX > 0)
