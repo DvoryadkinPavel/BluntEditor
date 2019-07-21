@@ -1,16 +1,18 @@
 ﻿<Properties StartupConfiguration="{E5525596-3C4D-48AF-AFD6-53A9311C074D}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="BluntEditor/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="BluntEditor/app.config">
     <Files>
-      <File FileName="BluntEditor/Program.cs" Line="290" Column="28" />
-      <File FileName="BluntEditor/Curses.cs" Line="255" Column="14" />
-      <File FileName="Исходный код недоступен" />
+      <File FileName="BluntEditor/Program.cs" Line="231" Column="10" />
+      <File FileName="BluntEditor/Curses.cs" Line="167" Column="41" />
+      <File FileName="BluntEditor/Properties/AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="BluntEditor/app.config" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="BluntEditor" expanded="True">
             <Node name="BluntEditor" expanded="True">
-              <Node name="Program.cs" selected="True" />
+              <Node name="Properties" expanded="True" />
+              <Node name="app.config" selected="True" />
             </Node>
           </Node>
         </State>
@@ -21,9 +23,7 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/home/pasha/Projects/BluntEditor/BluntEditor/Program.cs" relfile="BluntEditor/Program.cs" line="297" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
 </Properties>
