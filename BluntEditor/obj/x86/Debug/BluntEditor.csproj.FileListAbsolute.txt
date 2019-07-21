@@ -1,6 +1,0 @@
-/home/pasha/Projects/BluntEditor/BluntEditor/bin/Debug/BluntEditor.exe
-/home/pasha/Projects/BluntEditor/BluntEditor/bin/Debug/BluntEditor.pdb
-/home/pasha/Projects/BluntEditor/BluntEditor/obj/x86/Debug/BluntEditor.csproj.CoreCompileInputs.cache
-/home/pasha/Projects/BluntEditor/BluntEditor/obj/x86/Debug/BluntEditor.exe
-/home/pasha/Projects/BluntEditor/BluntEditor/obj/x86/Debug/BluntEditor.pdb
-/home/pasha/Projects/BluntEditor/BluntEditor/obj/x86/Debug/BluntEditor.csprojAssemblyReference.cache

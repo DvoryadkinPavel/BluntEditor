@@ -5,165 +5,167 @@ namespace BluntEditor
 {
     public class Curses
     {
-        const string NCurses = "libncursesw.so.5";
-        const string Locale = "/usr/bin/locale";
-        private IntPtr window;
         /// <summary>
-        /// Initscr this instance.
+        /// файл библиотеки ncurses
         /// </summary>
-        /// <returns>The initscr.</returns>
+        const string NCurses = "libncursesw.so.5";
+        /// <summary>
+        /// файл локали
+        /// </summary>
+        const string Locale = "/usr/bin/locale";
+        /// <summary>
+        /// указатель на окно терминала
+        /// </summary>
+        private IntPtr window;
         [DllImport(NCurses)]
         private extern static IntPtr initscr();
+        /// <summary>
+        /// конструктор класса библиотеки ncurses
+        /// </summary>
         public Curses()
         {
-            SetLocale();//не работает для GetChar TODO: прикрутить костыль ввода UTF-8
+            SetLocale();
             window = initscr();
         }
-        /// <summary>
-        /// Endwin this instance.
-        /// </summary>
-        /// <returns>The endwin.</returns>
         [DllImport(NCurses)]
         private extern static int endwin();
+        /// <summary>
+        /// Деструктор класса библиотеки ncurses
+        /// </summary>
         ~Curses()
         {
             int result = endwin();
         }
         [DllImport(Locale)]
         private extern static int setlocale(int loc, string val);
+        /// <summary>
+        /// Установить локаль
+        /// </summary>
+        /// <returns>The locale.</returns>
         public int SetLocale()
         {
             return setlocale(0, "");
         }
-        /// <summary>
-        /// Mvwprintw the specified window, y, x and message.
-        /// </summary>
-        /// <returns>The mvwprintw.</returns>
-        /// <param name="window">Window.</param>
-        /// <param name="y">The y coordinate.</param>
-        /// <param name="x">The x coordinate.</param>
-        /// <param name="message">Message.</param>
         [DllImport(NCurses)]
         private extern static int mvwprintw(IntPtr window, int y, int x, string message);
         /// <summary>
-        /// Print the specified x, y and message.
+        /// Вывод сообщения по координатам
         /// </summary>
-        /// <returns>The print.</returns>
-        /// <param name="x">The x coordinate.</param>
-        /// <param name="y">The y coordinate.</param>
-        /// <param name="message">Message.</param>
         public int Print(int x, int y, string message)
         {
             return mvwprintw(window, y, x, message);
         }
-        /// <summary>
-        /// Refresh the specified window.
-        /// </summary>
-        /// <returns>The refresh.</returns>
-        /// <param name="window">Window.</param>
         [DllImport(NCurses)]
         private extern static int refresh(IntPtr window);
         /// <summary>
-        /// Refresh this instance.
+        /// Обновить экран
         /// </summary>
-        /// <returns>The refresh.</returns>
         public int Refresh()
         {
             return refresh(window);
         }
-        /// <summary>
-        /// Wgetch the specified window.
-        /// </summary>
-        /// <returns>The wgetch.</returns>
-        /// <param name="window">Window.</param>
         [DllImport(NCurses)]
-        private extern static int getchar();//wgetch(IntPtr window);
+        private extern static int getchar();
         /// <summary>
-        /// Gets the char.
+        /// Возвращает нажатую клавишу
         /// </summary>
-        /// <returns>The char.</returns>
         public int GetChar()
         {
-            return getchar();//wgetch(window);
+            return getchar();
         }
-        /// <summary>
-        /// Keypad the specified window and bf.
-        /// </summary>
-        /// <returns>The keypad.</returns>
-        /// <param name="window">Window.</param>
-        /// <param name="bf">If set to <c>true</c> bf.</param>
         [DllImport(NCurses)]
         private extern static int keypad(IntPtr window, bool bf);
         /// <summary>
-        /// Keies the pad.
+        /// Включение/выключение функциональных клавиш
         /// </summary>
-        /// <returns>The pad.</returns>
-        /// <param name="bf">If set to <c>true</c> bf.</param>
         public int KeyPad(bool bf)
         {
             return keypad(window,bf);
         }
-        /// <summary>
-        /// Noecho this instance.
-        /// </summary>
-        /// <returns>The noecho.</returns>
         [DllImport(NCurses)]
         private extern static int noecho();
         /// <summary>
-        /// Nos the echo.
+        /// Не выводить нажатые клавиши на экран
         /// </summary>
-        /// <returns>The echo.</returns>
         public int NoEcho()
         {
             return noecho();
         }
-        /// <summary>
-        /// Move the specified y and x.
-        /// </summary>
-        /// <returns>The move.</returns>
-        /// <param name="y">The y coordinate.</param>
-        /// <param name="x">The x coordinate.</param>
         [DllImport(NCurses)]
         private extern static int move(int y, int x);
         /// <summary>
-        /// Move the specified x and y.
+        /// Переместить курсор по координатам
         /// </summary>
-        /// <returns>The move.</returns>
-        /// <param name="x">The x coordinate.</param>
-        /// <param name="y">The y coordinate.</param>
         public int Move(int x, int y)
         {
             return move(y, x);
         }
-        /// <summary>
-        /// Insertln this instance.
-        /// </summary>
-        /// <returns>The insertln.</returns>
         [DllImport(NCurses)]
         private extern static int insertln();
         /// <summary>
-        /// Inserts the line.
+        /// Вставить строку
         /// </summary>
-        /// <returns>The line.</returns>
         public int InsertLine()
         {
             return insertln();
         }
-        /// <summary>
-        /// Deleteln this instance.
-        /// </summary>
-        /// <returns>The deleteln.</returns>
         [DllImport(NCurses)]
         private extern static int deleteln();
         /// <summary>
-        /// Deletes the line.
+        /// Удалить строку
         /// </summary>
-        /// <returns>The line.</returns>
         public int DeleteLine()
         {
             return deleteln();
         }
-
+        [DllImport(NCurses)]
+        private extern static int start_color();
+        /// <summary>
+        /// Включить цвета
+        /// </summary>
+        public int StartColor()
+        {
+            return start_color();
+        }
+        [DllImport(NCurses)]
+        private extern static int init_pair(short index, short back, short fore);
+        /// <summary>
+        /// Инициализация пары цветов
+        /// </summary>
+        public int InitPair(short index, short fore, short back)
+        {
+            return init_pair(index, fore, back);
+        }
+        [DllImport(NCurses)]
+        private extern static int COLOR_PAIR(int n);
+        /// <summary>
+        /// Возвращает пару цветов
+        /// </summary>
+        public int ColorPair(int n)
+        {
+            return COLOR_PAIR(n);
+        }
+        [DllImport(NCurses)]
+        private extern static int attron(int n);
+        /// <summary>
+        /// Применить цветовую пару
+        /// </summary>
+        public int AttrOn(int n)
+        {
+            return attron(n);
+        }
+        [DllImport(NCurses)]
+        private extern static int attroff(int n);
+        /// <summary>
+        /// Отменить цветовую пару
+        /// </summary>
+        public int AttrOff(int n)
+        {
+            return attroff(n);
+        }
+        /// <summary>
+        /// Удалить первую строку экрана
+        /// </summary>
         public void DeleteFirstLine()
         {
             Move(0, 0);
