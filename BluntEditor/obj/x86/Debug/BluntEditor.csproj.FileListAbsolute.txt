@@ -1,0 +1,6 @@
+C:\soft\BluntEditor\BluntEditor\bin\Debug\BluntEditor.exe
+C:\soft\BluntEditor\BluntEditor\bin\Debug\BluntEditor.pdb
+C:\soft\BluntEditor\BluntEditor\obj\x86\Debug\BluntEditor.csprojResolveAssemblyReference.cache
+C:\soft\BluntEditor\BluntEditor\obj\x86\Debug\BluntEditor.csproj.CoreCompileInputs.cache
+C:\soft\BluntEditor\BluntEditor\obj\x86\Debug\BluntEditor.exe
+C:\soft\BluntEditor\BluntEditor\obj\x86\Debug\BluntEditor.pdb

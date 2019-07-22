@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections;
+using System.Text;
 
 namespace BluntEditor
 {
@@ -107,14 +108,12 @@ namespace BluntEditor
         public static void ShowInfo()
         {
             var symbol = posX + previousColumnCount;
-            Curses.StartColor();
-            Curses.InitPair(1, (short)ConsoleColor.Green, (short)ConsoleColor.Black);
-            Curses.AttrOn(Curses.ColorPair(1));
+            Console.ForegroundColor = ConsoleColor.Green;
             Curses.Print(0, 0, EmptyString);
             Curses.Print(0, maxY - 1, EmptyString);
             Curses.Print(0, 0, $"Файл : {FileName}");
             Curses.Print(0, maxY - 1, $"Строка : {stringIndex} Символ : {symbol}");
-            Curses.AttrOff(Curses.ColorPair(1));
+            Console.ResetColor();
         }
         /// <summary>
         /// Обновление текущей строки
@@ -156,8 +155,11 @@ namespace BluntEditor
                 }
                 else
                 {
-                    var item = (string)Content[index + previousLinesCount - 1];
-
+                    var item = "";
+                    if (Content.Count >= (index +previousLinesCount))
+                    {
+                        item = (string)Content[index + previousLinesCount - 1];
+                    }
                     if (String.IsNullOrEmpty(item))
                     {
                         Curses.Print(0, index, EmptyString);
@@ -226,7 +228,7 @@ namespace BluntEditor
         /// </summary>
         public static void UpdateSizes()
         {
-            maxY = Console.WindowHeight;
+            maxY = Console.WindowHeight-1;
             maxX = Console.WindowWidth-1;
         }
         /// <summary>
@@ -236,15 +238,12 @@ namespace BluntEditor
         {
             try
             {
-                using (StreamReader reader = File.OpenText(_fileName))
+                string content = File.ReadAllText(_fileName, Encoding.Default);
+                var strings = content.Split(new string[] { "\n", "\0" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var str in strings)
                 {
-                    string content = reader.ReadToEnd();
-                    var strings = content.Split(new string[] { "\n","\0" }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var str in strings)
-                    {
-                        var current = str.Replace("\r", String.Empty);
-                        Content.Add(current);
-                    }
+                    var current = str.Replace("\r", String.Empty);
+                    Content.Add(current);
                 }
             }
             catch
@@ -297,7 +296,7 @@ namespace BluntEditor
             if ((maxY - 1) == posY)
             {
                 previousLinesCount++;
-                Curses.DeleteFirstLine();
+                RefreshLines();
                 posY--;
                 ShowInfo();
                 Curses.Print(posX, posY, EmptyString);
@@ -334,6 +333,8 @@ namespace BluntEditor
                     currentString = CharListToString(list);
                 }
                 RefreshLine();
+                ShowInfo();
+                Curses.Refresh();
             }
             else
             {
@@ -518,6 +519,7 @@ namespace BluntEditor
             previousColumnCount = 0;
             RefreshLines();
             ShowInfo();
+            Curses.Refresh();
         }
         /// <summary>
         /// Обработчик нажатия PageDown
@@ -618,9 +620,10 @@ namespace BluntEditor
             Curses.NoEcho();
             Curses.KeyPad(true);
             UpdateSizes();
-            RefreshLines();
+            ShowInfo();
             Curses.Move(0, 1);
             Curses.Refresh();
+            RefreshLines();
         }
         public static int Main(string[] args)
         {
@@ -644,6 +647,11 @@ namespace BluntEditor
                 ReadFile();
                 currentString = (string)Content[0];
             }
+            //--------------------------------DEBUG
+            _fileName = "example.txt";
+            ReadFile();
+            currentString = (string)Content[0];
+            //-------------------------------------
             StartUp();
             while (!exit)
             {

@@ -3,3 +3,7 @@
 ################################################################################
 
 *.exe
+*.pdb
+/.vs/BluntEditor/v15/Server/sqlite3
+/.vs/BluntEditor/v15
+/BluntEditor/bin/Debug/example.txt
