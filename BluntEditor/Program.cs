@@ -156,7 +156,11 @@ namespace BluntEditor
                 }
                 else
                 {
-                    var item = (string)Content[index + previousLinesCount - 1];
+                    var item = "";
+                    if (Content.Count >=(index + previousLinesCount))
+                    {
+                        item = (string)Content[index + previousLinesCount - 1];
+                    }
 
                     if (String.IsNullOrEmpty(item))
                     {
@@ -334,6 +338,9 @@ namespace BluntEditor
                     currentString = CharListToString(list);
                 }
                 RefreshLine();
+                ShowInfo();
+                Curses.Move(posX, posY);
+                Curses.Refresh();
             }
             else
             {

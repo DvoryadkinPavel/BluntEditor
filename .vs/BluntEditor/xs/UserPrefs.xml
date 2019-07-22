@@ -1,18 +1,17 @@
 ﻿<Properties StartupConfiguration="{E5525596-3C4D-48AF-AFD6-53A9311C074D}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Выходные данные сборки 2:01 ДП 2019-07-22.binlog">
+  <MonoDevelop.Ide.Workbench ActiveDocument="BluntEditor/Curses.cs">
     <Files>
-      <File FileName="BluntEditor/Program.cs" Line="617" Column="30" />
+      <File FileName="BluntEditor/Program.cs" Line="342" Column="41" />
       <File FileName="BluntEditor/Curses.cs" Line="7" Column="18" />
       <File FileName="BluntEditor/Properties/AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="BluntEditor/app.config" Line="3" Column="38" />
-      <File FileName="Выходные данные сборки 2:01 ДП 2019-07-22.binlog" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="BluntEditor" expanded="True" selected="True">
+          <Node name="BluntEditor" expanded="True">
             <Node name="BluntEditor" expanded="True">
               <Node name="Properties" expanded="True" />
+              <Node name="Curses.cs" selected="True" />
             </Node>
           </Node>
         </State>
@@ -21,7 +20,7 @@
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.ItemProperties.BluntEditor PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
