@@ -7,7 +7,7 @@ namespace BluntEditor
     public class Curses
     {
         /// <summary>
-        /// файл локали
+        /// файл ncurses
         /// </summary>
         const string NCurses = "libncursesw.so.5";
         /// <summary>
