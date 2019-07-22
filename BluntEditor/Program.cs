@@ -647,11 +647,6 @@ namespace BluntEditor
                 ReadFile();
                 currentString = (string)Content[0];
             }
-            //--------------------------------DEBUG
-            _fileName = "example.txt";
-            ReadFile();
-            currentString = (string)Content[0];
-            //-------------------------------------
             StartUp();
             while (!exit)
             {
