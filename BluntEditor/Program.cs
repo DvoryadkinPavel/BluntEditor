@@ -565,6 +565,13 @@ namespace BluntEditor
             Curses.Move(posX, posY);
             Curses.Refresh();
         }
+        public static void TabEvent()
+        {
+            for(int count=0;count<4;count++)
+            {
+                AddCharToCurrentLineEvent(new ConsoleKeyInfo(' ', ConsoleKey.Spacebar, false, false, false));
+            }
+        }
         /// <summary>
         /// Переключатель обработчиков нажатия клавиш
         /// </summary>
@@ -572,6 +579,9 @@ namespace BluntEditor
         {
             switch (ck.Key)
             {
+                case ConsoleKey.Tab:
+                    TabEvent();
+                    break;
                 case ConsoleKey.PageUp:
                     PageUpEvent();
                     break;
